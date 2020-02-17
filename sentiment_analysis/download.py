@@ -30,7 +30,7 @@ def download():
             with open(PATH, 'w') as f:
                 shutil.copyfileobj(r.raw, f)
         else:
-            with open(PATH, 'w') as f:
+            with open(PATH, 'wb') as f:
                 for data in r.iter_content(chunk_size=CHUNK_SIZE):
                     f.write(data)
 

@@ -136,7 +136,7 @@ def train(word_dict,
     def train_loop(main_program):
         exe.run(fluid.default_startup_program())
 
-        for pass_id in xrange(PASS_NUM):
+        for pass_id in range(PASS_NUM):
             train_loss_set = []
             train_acc_set = []  
    
@@ -146,9 +146,9 @@ def train(word_dict,
                 cost_val, acc_val = exe.run(main_program,
                                             feed=feeder.feed(data),
                                             fetch_list=[cost, acc_out])
-		train_loss_set.append(float(cost_val))
-		train_acc_set.append(float(acc_val)) 
-	    train_loss = np.array(train_loss_set).mean()
+            train_loss_set.append(float(cost_val))
+            train_acc_set.append(float(acc_val)) 
+            train_loss = np.array(train_loss_set).mean()
             train_acc = np.array(train_acc_set).mean() * 100
 
             # Calculate average valication loss and accuracy 
