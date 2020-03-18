@@ -1,6 +1,5 @@
 tqdm==4.20.0
 scipy
-torch
 numpy
 numpy_indexed
 pandas
