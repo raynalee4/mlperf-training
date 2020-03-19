@@ -16,14 +16,10 @@ RUN yum update -y && yum install -y \
 RUN yum install -y centos-release-scl
 RUN yum install devtoolset-7 rh-python36 -y
 
-RUN git clone https://github.com/raynalee4/mlperf-training.git && \
-	cd mlperf-training && \
-	git checkout recommendation
+RUN git clone https://github.com/raynalee4/mlperf-training.git -b recommendation
 
 WORKDIR /mlperf/mlperf-training/recommendation/pytorch
 RUN cat requirements.txt
-
-COPY requirements.txt /mlperf/mlperf-training/recommendation/pytorch
 
 RUN source scl_source enable rh-python36 devtoolset-7 && \
 	pip install --upgrade pip && \
@@ -40,11 +36,13 @@ RUN source scl_source enable rh-python36 devtoolset-7 && \
 	mkdir /data_dir && \
 	cp download_dataset.sh verify_dataset.sh /data_dir && \
 	cd /data_dir && \
+	chmod +x download_dataset.sh verify_dataset.sh && \
 	./download_dataset.sh && \
 	./verify_dataset.sh && \
 	unzip ml-20m.zip
 
-WORKDIR /mlkperf/data_generation/fractal_graph_expansions
+WORKDIR /mlperf/mlperf-training/data_generation/fractal_graph_expansions
+RUN	ls /data_dir
 RUN source scl_source enable rh-python36 devtoolset-7 && \
 	pip install -r requirements.txt && \
-	DATA_DIR=/my_data_dir ./data_gen.sh
+	DATA_DIR=/data_dir ./data_gen.sh
