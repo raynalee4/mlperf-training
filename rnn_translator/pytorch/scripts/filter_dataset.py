@@ -10,7 +10,7 @@ def parse_args():
 
 
 def save_output(fname, data):
-    with open(fname, 'w') as f:
+    with open(fname, 'w', encoding="utf-8", errors="ignore") as f:
         f.writelines(data)
 
 
@@ -51,7 +51,7 @@ def main():
     data1 = []
     data2 = []
 
-    with open(args.file1) as f1, open(args.file2) as f2:
+    with open(args.file1, encoding="utf-8", errors="ignore") as f1, open(args.file2, encoding="utf-8", errors="ignore") as f2:
         for idx, lines in enumerate(zip(f1, f2)):
             line1, line2 = lines
             if idx % 100000 == 1:

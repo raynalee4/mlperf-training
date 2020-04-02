@@ -122,7 +122,7 @@ class Translator:
         output = self.loader.dataset.unsort(output)
 
         if rank == 0:
-            with open(eval_path, 'a') as eval_file:
+            with open(eval_path, 'a', encoding="utf-8", errors="ignore") as eval_file:
                 eval_file.writelines(output)
             if calc_bleu:
                 self.run_detokenizer(eval_path)
@@ -265,8 +265,8 @@ class Translator:
         detok_path = os.path.join(self.dataset_dir, config.DETOKENIZER)
         detok_eval_path = eval_path + '.detok'
 
-        with open(detok_eval_path, 'w') as detok_eval_file, \
-                open(eval_path, 'r') as eval_file:
+        with open(detok_eval_path, 'w', encoding="utf-8", errors="ignore") as detok_eval_file, \
+                open(eval_path, 'r', encoding="utf-8", errors="ignore") as eval_file:
             subprocess.run(['perl', f'{detok_path}'], stdin=eval_file,
                            stdout=detok_eval_file, stderr=subprocess.DEVNULL)
 
