@@ -1,7 +1,9 @@
+source scl_source enable rh-python36 devtoolset-7
+
 DATASET=${DATASET:-ml-20m}
 USER_MUL=${USER_MUL:-16}
 ITEM_MUL=${ITEM_MUL:-32}
-DATA_DIR=${DATA_DIR:-/data/cache}
+DATA_DIR=${DATA_DIR:-/data}
 
 DATA_PATH=${DATA_DIR}/${DATASET}x${USER_MUL}x${ITEM_MUL}/
 

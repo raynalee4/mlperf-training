@@ -1,10 +1,7 @@
-FROM docker-registry.default.svc:5000/mlperf/recommendation@sha256:26a784412e14344cc2c55454c9a27b879ae5300d93aa12eae4d8b08d3e6ab30d
-#FROM nvidia/cuda:10.0-cudnn7-runtime-centos7
+FROM nvidia/cuda:10.0-cudnn7-runtime-centos7
 #FROM nvidia/cuda:10.0-cudnn7-devel-ubi7
 
-WORKDIR /mlperf/mlperf-training/recommendation/pytorch
-
-RUN yum update -y
+WORKDIR /mlperf
 
 RUN yum update -y && yum install -y \
 	ca-certificates \
@@ -31,11 +28,6 @@ RUN source scl_source enable rh-python36 devtoolset-7 && \
 	cd negative_sampling_cpp && \
 	python setup.py install
 
-WORKDIR /mlperf/mlperf-training/recommendation
-RUN mkdir /data && \
-	cp download_dataset.sh verify_dataset.sh /data
-
 WORKDIR /mlperf/mlperf-training/data_generation/fractal_graph_expansions
 RUN source scl_source enable rh-python36 devtoolset-7 && \
-	pip install -r requirements.txt && \
-	data=/data ./data_gen.sh
+	pip install -r requirements.txt

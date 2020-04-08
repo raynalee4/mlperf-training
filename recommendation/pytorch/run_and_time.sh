@@ -1,4 +1,5 @@
 #!/bin/bash
+source scl_source enable rh-python36 devtoolset-7
 set -e
 
 # runs benchmark and reports time to convergence

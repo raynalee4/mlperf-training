@@ -1,28 +1,60 @@
-FROM pytorch/pytorch:1.0.1-cuda10.0-cudnn7-devel
+#FROM nvidia/cuda:10.0-cudnn7-runtime-centos7
+FROM nvidia/cuda:10.0-cudnn7-devel-centos7
 
-RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+WORKDIR /mlperf
+
+ENV CUDA_HOME /usr/local/cuda
+ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64
+ENV PATH $PATH:$CUDA_HOME/bin
+
+RUN yum install -y centos-release-scl && \
+    yum install devtoolset-7 rh-python36 -y
+
 
 # install basics
-RUN apt-get update -y \
- && apt-get install -y apt-utils=1.2.29ubuntu0.1 \
-                       libglib2.0-0=2.48.2-0ubuntu4.1 \
-                       libsm6=2:1.2.2-1 \
-                       libxext6=2:1.3.3-1 \
-                       libxrender-dev=1:0.9.9-0ubuntu1
+RUN yum update -y && yum install -y \
+    ca-certificates \
+    build-essential \
+    git \
+    curl \
+    wget \
+    unzip \
+    which \
+    libXext libSM libXrender
 
-RUN pip install ninja==1.8.2.post2 \
-                yacs==0.1.5 \
-                cython==0.29.5 \
-                matplotlib==3.0.2 \
-                opencv-python==4.0.0.21 \
-                mlperf_compliance==0.0.10 \
-                torchvision==0.2.2
+ENV PYENV_ROOT $HOME/.pyenv
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+
+RUN source scl_source enable rh-python36 devtoolset-7 && \
+    pip install --upgrade pip && \
+    pip install yacs==0.1.5 \
+      cython==0.29.5 \
+      matplotlib==3.0.2 \
+      opencv-python==4.0.0.21 \
+      mlperf_compliance==0.0.10 \
+      gsutil \
+      Pillow==5.4.1 \
+      tqdm==4.19.9 \
+      numpy \
+      ipython==7.2.0 \
+      torch==1.0.1.post2 \
+      torchvision==0.2.2 \
+      ninja==1.8.2.post2 
+
+ADD . /mlperf
 
 # install pycocotools
-RUN git clone https://github.com/cocodataset/cocoapi.git \
- && cd cocoapi/PythonAPI \
- && git reset --hard ed842bffd41f6ff38707c4f0968d2cfd91088688 \
- && python setup.py build_ext install
+RUN git clone https://github.com/cocodataset/cocoapi.git
+RUN source scl_source enable rh-python36 devtoolset-7 && \
+    python --version && \
+    cd cocoapi/PythonAPI && \
+    python setup.py build_ext install && \
+    cd ../.. && \
+    cd object_detection/ && \
+    pip uninstall -y torch; pip uninstall -y torch && \
+    pip install torch==1.0.1.post2 && \
+    cd pytorch && \
+    python setup.py build develop
 
 # For information purposes only, these are the versions of the packages which we've successfully used:
 # $ pip list
